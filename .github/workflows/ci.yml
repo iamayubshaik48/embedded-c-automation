@@ -1,0 +1,38 @@
+
+name: Embedded C Build and Test
+
+on:
+  push:
+    branches: [main]
+
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Build Docker Image
+        run: docker build -t embedded-c-build .
+
+      - name: Compile and Run Tests
+        run: |
+          docker run --rm \
+            -v "$PWD:/workspace" \
+            -w /workspace \
+            embedded-c-build \
+            bash -c "mkdir -p build &&
+            gcc -Wall -Wextra -Werror -std=c11 \
+            -o build/temperature_monitor \
+            src/temperature_monitor.c &&
+            python3 tests/test_app.py"
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: temperature-monitor-build
+          path: build/temperature_monitor
