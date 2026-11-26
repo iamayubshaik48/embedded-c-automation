@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
         fprintf(stderr, "ERROR: Invalid temperature\n");
         return 2;
     }
-    printf("Temperature: %.2f C\n", temperature);
+    printf("Temperature: %.2f C\n", temperature
     if (temperature > 45) {
         printf("STATUS: CRITICAL\n");
     }
